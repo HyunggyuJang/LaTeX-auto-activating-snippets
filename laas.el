@@ -35,54 +35,21 @@
   "Insert a space at point, if it seems warranted."
   (when (and (stringp aas-transient-snippet-expansion)
              (= ?\\ (aref aas-transient-snippet-expansion 0))
-             (not (memq (char-after) '(?\) ?\]))))
+             (not (memq (char-after) '(?\) ?\] ?\\))))
     (insert " ")))
-
-(defun laas-insert-script (s)
-  "Add a subscript with a text of S (string).
-
-Rely on `aas-transient-snippet-condition-result' to contain the
-result of `aas-auto-script-condition' which gives the info
-whether to extend an existing subscript (e.g a_1 -> a_{1n}) or
-insert a new subscript (e.g a -> a_1)."
-  (interactive (list (this-command-keys)))
-  (pcase aas-transient-snippet-condition-result
-    ;; new subscript after a letter
-    ('one-sub
-     (insert "_" s))
-    ;; continuing a digit sub/superscript
-    ('extended-sub
-     (backward-char)
-     (insert "{")
-     (forward-char)
-     (insert s "}"))))
 
 (defun laas-mathp ()
   "Determine whether point is within a LaTeX maths block."
-  (cond
-   ((derived-mode-p 'latex-mode) (texmathp))
-   ((derived-mode-p 'org-mode) (laas-org-mathp))
-   (_ (message "LaTeX auto-activated snippets does not currently support any of %s" modes)
-      nil)))
-
-(declare-function org-element-at-point "org-element")
-(declare-function org-element-type "org-element")
-(declare-function org-element-context "org-element")
-
-(defun laas-org-mathp ()
-  "Determine whether the point is within a LaTeX fragment or environment."
-  (let ((element (org-element-at-point)))
-    (or (eq (org-element-type element) 'latex-environment)
-        (eq (org-element-type (org-element-context element)) 'latex-fragment))))
+  (if (derived-mode-p 'latex-mode 'org-mode)
+      (texmathp)
+    (message "LaTeX auto-activated snippets does not currently support any of %s"
+             (aas--modes-to-activate major-mode))
+    nil))
 
 (defun laas-auto-script-condition ()
   "Condition used for auto-sub/superscript snippets."
   (cond ((or (bobp) (= (1- (point)) (point-min)))
          nil)
-        ((and (or (= (char-before (1- (point))) ?_)
-                  (= (char-before (1- (point))) ?^))
-              (/= (char-before) ?{))
-         'extended-sub)
         ((and
           ;; Before is some indexable char
           (or (<= ?a (char-before) ?z)
@@ -91,8 +58,7 @@ insert a new subscript (e.g a -> a_1)."
           (not (or (<= ?a (char-before (1- (point))) ?z)
                    (<= ?A (char-before (1- (point))) ?Z)))
           ;; Inside math
-          (laas-mathp))
-         'one-sub)))
+          (laas-mathp)))))
 
 (defun laas-identify-adjacent-tex-object (&optional point)
   "Return the starting position of the left-adjacent TeX object from POINT."
@@ -205,7 +171,7 @@ it is restored only once."
     "cb"    "^3"
     "iff"   "\\iff"
     "inn"   "\\in"
-    "notin" "\\not\\in"
+    "notin" "\\notin"
     "sr"    "^2"
     "xx"    "\\times"
     "|->"   "\\mapsto"
@@ -246,15 +212,18 @@ it is restored only once."
     "gcd"    "\\gcd"
     "min"    "\\min"
     "max"    "\\max"
+    "sup" "\\sup"
+    "inf" "\\inf"
+    "det" "\\det"
 
-    "CC" "\\CC"
-    "FF" "\\FF"
-    "HH" "\\HH"
-    "NN" "\\NN"
-    "PP" "\\PP"
-    "QQ" "\\QQ"
-    "RR" "\\RR"
-    "ZZ" "\\ZZ"
+    "CC" "\\mathbb{C}"
+    "FF" "\\mathbb{F}"
+    "HH" "\\mathbb{H}"
+    "NN" "\\mathbb{N}"
+    "PP" "\\mathbb{P}"
+    "QQ" "\\mathbb{Q}"
+    "RR" "\\mathbb{R}"
+    "ZZ" "\\mathbb{Z}"
 
     ";a"  "\\alpha"
     ";A"  "\\forall"        ";;A" "\\aleph"
@@ -310,7 +279,7 @@ it is restored only once."
     ";_"  "\\downarrow"
     ";+"  "\\cup"
     ";-"  "\\leftrightarrow"";;-" "\\longleftrightarrow"
-    ";*"  "\\times"
+    ";*"  "\\times"         ";;*" "\\otimes"
     ";/"  "\\not"
     ";|"  "\\mapsto"        ";;|" "\\longmapsto"
     ";\\" "\\setminus"
@@ -324,38 +293,46 @@ it is restored only once."
     ";<"  "\\leftarrow"    ";;<" "\\longleftarrow"  ";;;<" "\\min"
     ";>"  "\\rightarrow"   ";;>" "\\longrightarrow" ";;;>" "\\max"
     ";'"  "\\prime"
-    ";."  "\\cdot")
+    ";."  "\\cdot"         ";;." "\\circ"
+    "; "  "\\quad"         ";; " "\\qqaud")
   "Basic snippets. Expand only inside maths.")
 
 (defvar laas-subscript-snippets
   `(:cond laas-auto-script-condition
-    ,@(cl-loop for (key exp) in '(("ii"  laas-insert-script)
-                                  ("ip1" "_{i+1}")
-                                  ("im1" "_{i-1}")
-                                  ("jj"  laas-insert-script)
-                                  ("jp1" "_{j+1}")
-                                  ("jm1" "_{j-1}")
-                                  ("nn"  laas-insert-script)
-                                  ("np1" "_{n+1}")
-                                  ("nm1" "_{n-1}")
-                                  ("kk"  laas-insert-script)
-                                  ("kp1" "_{k+1}")
-                                  ("km1" "_{k-1}")
-                                  ("0"   laas-insert-script)
-                                  ("1"   laas-insert-script)
-                                  ("2"   laas-insert-script)
-                                  ("3"   laas-insert-script)
-                                  ("4"   laas-insert-script)
-                                  ("5"   laas-insert-script)
-                                  ("6"   laas-insert-script)
-                                  ("7"   laas-insert-script)
-                                  ("8"   laas-insert-script)
-                                  ("9"   laas-insert-script))
-               if (symbolp exp)
-               collect :expansion-desc
-               and collect (format "X_%s, or X_{Y%s} if a subscript was typed already"
-                               (substring key -1) (substring key -1))
-               collect key collect exp))
+    "ii"  "_i"
+    "II"  "^i"
+    "ip1" "_{i+1}"
+    "Ip1" "^{i+1}"
+    "im1" "_{i-1}"
+    "Im1" "^{i-1}"
+    "jj"  "_j"
+    "JJ"  "^j"
+    "jp1" "_{j+1}"
+    "Jp1" "^{j+1}"
+    "jm1" "_{j-1}"
+    "Jm1" "^{j-1}"
+    "nn"  "_n"
+    "NN"  "^n"
+    "np1" "_{n+1}"
+    "Np1" "^{n+1}"
+    "nm1" "_{n-1}"
+    "Nm1" "^{n-1}"
+    "kk"  "_k"
+    "KK"  "^k"
+    "kp1" "_{k+1}"
+    "Kp1" "^{k+1}"
+    "km1" "_{k-1}"
+    "Km1" "^{k-1}"
+    "0"   "_0"
+    "1"   "_1"
+    "2"   "_2"
+    "3"   "_3"
+    "4"   "_4"
+    "5"   "_5"
+    "6"   "_6"
+    "7"   "_7"
+    "8"   "_8"
+    "9"   "_9")
   "Automatic subscripts! Expand In math and after a single letter.")
 
 (defvar laas-frac-snippet
@@ -373,7 +350,13 @@ it is restored only once."
                                   (".," "vec")
                                   ("~ " "tilde")
                                   ("hat" "hat")
-                                  ("bar" "overline"))
+                                  ("bar" "overline")
+                                  ("'u" "underline")
+                                  ("'s" "mathscr")
+                                  ("'c" "mathcal")
+                                  ("'b" "mathbf")
+                                  ("'r" "mathrm")
+                                  ("'m" "mbox"))
                collect :expansion-desc
                collect (format "Wrap in \\%s{}" exp)
                collect key
