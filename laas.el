@@ -35,7 +35,7 @@
   "Insert a space at point, if it seems warranted."
   (when (and (stringp aas-transient-snippet-expansion)
              (= ?\\ (aref aas-transient-snippet-expansion 0))
-             (not (memq (char-after) '(?\) ?\] ?\\))))
+             (not (memq (char-after) '(?\) ?\]))))
     (insert " ")))
 
 (defun laas-mathp ()
