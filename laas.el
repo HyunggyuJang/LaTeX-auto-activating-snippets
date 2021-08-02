@@ -40,11 +40,24 @@
 
 (defun laas-mathp ()
   "Determine whether point is within a LaTeX maths block."
-  (if (derived-mode-p 'latex-mode 'org-mode)
-      (texmathp)
-    (message "LaTeX auto-activated snippets does not currently support any of %s"
+  (cond
+   ((derived-mode-p 'latex-mode) (texmathp))
+   ((derived-mode-p 'org-mode) (laas-org-mathp))
+   ((message "LaTeX auto-activated snippets does not currently support any of %s"
              (aas--modes-to-activate major-mode))
-    nil))
+    nil)))
+
+
+(declare-function org-element-at-point "org-element")
+(declare-function org-element-type "org-element")
+(declare-function org-element-context "org-element")
+
+(defun laas-org-mathp ()
+  "Determine whether the point is within a LaTeX fragment or environment."
+  (let ((element (org-element-at-point)))
+    (and (eq (org-element-type element) 'latex-environment)
+         (texmathp))))
+
 
 (defun laas-auto-script-condition ()
   "Condition used for auto-sub/superscript snippets."
