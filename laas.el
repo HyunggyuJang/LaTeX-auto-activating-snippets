@@ -54,8 +54,13 @@
 
 (defun laas-org-mathp ()
   "Determine whether the point is within a LaTeX fragment or environment."
-  (let ((element (org-element-at-point)))
-    (and (eq (org-element-type element) 'latex-environment)
+  (let ((element (org-element-at-point))
+        latex-env
+        pt)
+    (and (or (eq (car (setq latex-env (org-element-type element))) 'latex-environment)
+             (eq (car (setq latex-env (org-element-context element))) 'latex-environment))
+         (/= (setq pt (point)) (plist-get (setq latex-env (cdr latex-env)) :begin))
+         (/= pt (plist-get latex-env :end))
          (texmathp))))
 
 
