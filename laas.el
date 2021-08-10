@@ -47,16 +47,10 @@
              (aas--modes-to-activate major-mode))
     nil)))
 
-
-(declare-function org-element-at-point "org-element")
-(declare-function org-element-type "org-element")
-(declare-function org-element-context "org-element")
-
 (defun laas-org-mathp ()
   "Determine whether the point is within a LaTeX fragment or environment."
   (and (texmathp)
        (not (string= (car texmathp-why) "$")))) ;dollar sign is deprecated in org mode.
-
 
 (defun laas-auto-script-condition ()
   "Condition used for auto-sub/superscript snippets."
