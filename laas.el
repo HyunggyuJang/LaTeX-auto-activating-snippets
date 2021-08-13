@@ -324,7 +324,9 @@ it is restored only once."
                  'local)
     (remove-hook 'aas-post-snippet-expand-hook
                  #'laas-current-snippet-insert-post-space-if-wanted
-                 'local)))
+                 'local)
+    (unless aas-active-keymaps
+      (aas-mode -1))))
 
 (provide 'laas)
 ;;; laas.el ends here
