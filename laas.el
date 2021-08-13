@@ -167,6 +167,7 @@ it is restored only once."
     "<<"    "\\ll"
     "<="    "\\leq"
     "<>"    "\\diamond"
+    "><" "\\lessgtr"
     "=<"    "\\impliedby"
     "=="    "&="
     "=>"    "\\implies"
@@ -174,6 +175,8 @@ it is restored only once."
     ">>"    "\\gg"
     "AA"    "\\forall"
     "EE"    "\\exists"
+    "tp"    "^T"
+    "inv"   "^{-1}"
     "cb"    "^3"
     "iff"   "\\iff"
     "inn"   "\\in"
@@ -353,18 +356,17 @@ it is restored only once."
 (defvar laas-accent-snippets
   `(:cond laas-object-on-left-condition
     ,@(cl-loop for (key exp) in '((". " "dot")
-                                  (".. " "dot")
+                                  (".. " "ddot")
                                   (",." "vec")
-                                  (".," "vec")
                                   ("~ " "tilde")
                                   ("hat" "hat")
                                   ("bar" "overline")
-                                  ("'u" "underline")
-                                  ("'s" "mathscr")
-                                  ("'c" "mathcal")
-                                  ("'b" "mathbf")
-                                  ("'r" "mathrm")
-                                  ("'m" "mbox"))
+                                  ("und" "underline")
+                                  ("scr" "mathscr")
+                                  ("cal" "mathcal")
+                                  ("bf" "mathbf")
+                                  ("rm" "mathrm")
+                                  ("mb" "mbox"))
                collect :expansion-desc
                collect (format "Wrap in \\%s{}" exp)
                collect key
