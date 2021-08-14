@@ -58,11 +58,10 @@
          nil)
         ((and
           ;; Before is some indexable char
-          (or (<= ?a (char-before) ?z)
-              (<= ?A (char-before) ?Z))
-          ;; Before that is not
-          (not (or (<= ?a (char-before (1- (point))) ?z)
-                   (<= ?A (char-before (1- (point))) ?Z)))
+          (let ((look-before (char-before)))
+            (or (<= ?a look-before ?z)
+                (<= ?A look-before ?Z)
+                (= ?\} look-before)))
           ;; Inside math
           (laas-mathp)))))
 
