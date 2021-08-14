@@ -258,6 +258,7 @@ it is restored only once."
     ,@(cl-loop for (key exp) in '((":. " "dot")
                                   (":.." "ddot")
                                   (":v " "vec")
+                                  (":u"  "breve")
                                   (":~" "tilde")
                                   (":^" "hat")
                                   (":-" "overline")
