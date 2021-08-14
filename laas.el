@@ -256,18 +256,18 @@ it is restored only once."
 
 (defvar laas-accent-snippets
   `(:cond laas-object-on-left-condition
-    ,@(cl-loop for (key exp) in '((". " "dot")
-                                  (".. " "ddot")
-                                  (",." "vec")
-                                  ("~ " "tilde")
-                                  ("hat" "hat")
-                                  ("bar" "overline")
-                                  ("und" "underline")
-                                  ("scr" "mathscr")
-                                  ("cal" "mathcal")
-                                  ("bf" "mathbf")
-                                  ("rm" "mathrm")
-                                  ("mb" "mbox"))
+    ,@(cl-loop for (key exp) in '((":. " "dot")
+                                  (":.." "ddot")
+                                  (":v " "vec")
+                                  (":~" "tilde")
+                                  (":^" "hat")
+                                  (":-" "overline")
+                                  (":_" "underline")
+                                  (":s" "mathscr")
+                                  (":c" "mathcal")
+                                  (":b" "mathbf")
+                                  (":r" "mathrm")
+                                  (":t" "text"))
                collect :expansion-desc
                collect (format "Wrap in \\%s{}" exp)
                collect key
