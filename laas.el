@@ -97,6 +97,9 @@
   "Wrap previous TeX object in TEX-COMMAND."
   (interactive)
   (let ((start (laas-identify-adjacent-tex-object)))
+    ;; Remove smartparen inserted single quote if ' is used for expansion prefix
+    (if (= (char-after) ?\')
+        (delete-char 1))
     (insert "}")
     (save-excursion
       (goto-char start)
@@ -255,19 +258,19 @@ it is restored only once."
 
 (defvar laas-accent-snippets
   `(:cond laas-object-on-left-condition
-    ,@(cl-loop for (key exp) in '((":. " "dot")
-                                  (":.." "ddot")
-                                  (":v " "vec")
-                                  (":u"  "breve")
-                                  (":~" "tilde")
-                                  (":^" "hat")
-                                  (":-" "overline")
+    ,@(cl-loop for (key exp) in '(("'. " "dot")
+                                  ("'.." "ddot")
+                                  ("'v " "vec")
+                                  ("'u"  "breve")
+                                  ("'~" "tilde")
+                                  ("'h" "hat")
+                                  ("'-" "overline")
                                   (":_" "underline")
-                                  (":s" "mathscr")
-                                  (":c" "mathcal")
-                                  (":b" "mathbf")
-                                  (":r" "mathrm")
-                                  (":t" "text"))
+                                  ("'s" "mathscr")
+                                  ("'c" "mathcal")
+                                  ("'b" "mathbf")
+                                  ("'r" "mathrm")
+                                  ("'t" "text"))
                collect :expansion-desc
                collect (format "Wrap in \\%s{}" exp)
                collect key
