@@ -68,35 +68,41 @@
 (defun laas-identify-adjacent-tex-object (&optional point)
   "Return the starting position of the left-adjacent TeX object from POINT."
   (save-excursion
-    (goto-char (or point (point)))
-    (cond
-     ((memq (char-before) '(?\) ?\]))
-      (backward-sexp)
-      (point))
-     ((= (char-before) ?})
-      (cl-loop do (backward-sexp)
-               while (= (char-before) ?}))
-      ;; try to catch the marco if the braces belong to one
-      (when (looking-back "\\\\[A-Za-z@*]+" (line-beginning-position))
-        (goto-char (match-beginning 0)))
-      (when (memq (char-before) '(?_ ?^ ?.))
-        (backward-char)
-        (goto-char (laas-identify-adjacent-tex-object))) ; yay recursion
-      (point))
-     ((or (<= ?a (char-before) ?z)
-          (<= ?A (char-before) ?Z)
-          (<= ?0 (char-before) ?9))
-      (backward-word)
-      (when (= (char-before) ?\\) (backward-char))
-      (when (memq (char-before) '(?_ ?^ ?.))
-        (backward-char)
-        (goto-char (laas-identify-adjacent-tex-object))) ; yay recursion
-      (point)))))
+    (if point (goto-char point))
+    (while
+        (catch 'recursion
+          (pcase (char-before)
+            ((or ?\) ?\])
+             (backward-sexp)
+             (point))
+            (?\}
+             (cl-loop do (backward-sexp)
+                      while (= (char-before) ?}))
+             ;; try to catch the marco if the braces belong to one
+             (when (looking-back "\\\\[A-Za-z@*]+" (line-beginning-position))
+               (goto-char (match-beginning 0)))
+             (when (memq (char-before) '(?_ ?^ ?.))
+               (backward-char)
+               (throw 'recursion t)) ; yay recursion
+             (point))
+            ((pred
+              (lambda (c)
+                (or (<= ?a c ?z)
+                    (<= ?A c ?Z)
+                    (<= ?0 c ?9))))
+             (backward-word)
+             (when (= (char-before) ?\\) (backward-char))
+             (when (memq (char-before) '(?_ ?^ ?.))
+               (backward-char)
+               (throw 'recursion t)) ; yay recursion
+             (point)))
+          nil))
+    (point)))
 
 (defun laas-wrap-previous-object (tex-command)
   "Wrap previous TeX object in TEX-COMMAND."
   (interactive)
-  (let ((start (laas-identify-adjacent-tex-object)))
+  (let ((start aas-transient-snippet-condition-result))
     ;; Remove smartparen inserted single quote if ' is used for expansion prefix
     (if (= (char-after) ?\')
         (delete-char 1))
@@ -107,12 +113,9 @@
 
 (defun laas-object-on-left-condition ()
   "Return t if there is a TeX object imidiately to the left."
-  ;; TODO use `laas-identify-adjacent-tex-object'
-  (and (or (<= ?a (char-before) ?z)
-           (<= ?A (char-before) ?Z)
-           (<= ?0 (char-before) ?9)
-           (memq (char-before) '(?\) ?\] ?})))
-       (laas-mathp)))
+  (let ((left-adjacent (laas-identify-adjacent-tex-object)))
+    (if left-adjacent
+        (and (laas-mathp) left-adjacent))))
 
 ;; HACK Smartparens runs after us on the global `post-self-insert-hook' and
 ;;      thinks that since a { was inserted after a self-insert event, it
@@ -141,7 +144,7 @@ it is restored only once."
 (defun laas-smart-fraction ()
   "Expansion function used for auto-subscript snippets."
   (interactive)
-  (let* ((tex-obj (laas-identify-adjacent-tex-object))
+  (let* ((tex-obj aas-transient-snippet-condition-result)
          (start (save-excursion
                   ;; if bracketed, delete outermost brackets
                   (if (memq (char-before) '(?\) ?\]))
