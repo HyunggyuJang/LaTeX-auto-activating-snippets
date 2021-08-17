@@ -85,13 +85,11 @@
   "Wrap previous TeX object in TEX-COMMAND."
   (interactive)
   (let ((start aas-transient-snippet-condition-result))
-    ;; Remove smartparen inserted single quote if ' is used for expansion prefix
-    (if (= (char-after) ?\')
-        (delete-char 1))
     (insert "}")
     (save-excursion
       (goto-char start)
-      (insert (concat "\\" tex-command "{")))))
+      (insert (concat "\\" tex-command "{"))))
+  (laas--shut-up-smartparens))
 
 ;; HACK Smartparens runs after us on the global `post-self-insert-hook' and
 ;;      thinks that since a { was inserted after a self-insert event, it
