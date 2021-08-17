@@ -38,32 +38,14 @@
              (not (memq (char-after) '(?\) ?\]))))
     (insert " ")))
 
-(defun laas-mathp ()
-  "Determine whether point is within a LaTeX maths block."
-  (cond
-   ((derived-mode-p 'latex-mode) (texmathp))
-   ((derived-mode-p 'org-mode) (laas-org-mathp))
-   ((message "LaTeX auto-activated snippets does not currently support any of %s"
-             (aas--modes-to-activate major-mode))
-    nil)))
-
-(defun laas-org-mathp ()
-  "Determine whether the point is within a LaTeX fragment or environment."
-  (and (texmathp)
-       (not (string= (car texmathp-why) "$")))) ;dollar sign is deprecated in org mode.
-
 (defun laas-auto-script-condition ()
   "Condition used for auto-sub/superscript snippets."
   (cond ((or (bobp) (= (1- (point)) (point-min)))
          nil)
-        ((and
-          ;; Before is some indexable char
-          (let ((look-before (char-before)))
+        ((let ((look-before (char-before)))
             (or (<= ?a look-before ?z)
                 (<= ?A look-before ?Z)
-                (= ?\} look-before)))
-          ;; Inside math
-          (laas-mathp)))))
+                (= ?\} look-before))))))
 
 (defun laas-identify-adjacent-tex-object (&optional point)
   "Return the starting position of the left-adjacent TeX object from POINT."
@@ -111,12 +93,6 @@
       (goto-char start)
       (insert (concat "\\" tex-command "{")))))
 
-(defun laas-object-on-left-condition ()
-  "Return t if there is a TeX object imidiately to the left."
-  (let ((left-adjacent (laas-identify-adjacent-tex-object)))
-    (if left-adjacent
-        (and (laas-mathp) left-adjacent))))
-
 ;; HACK Smartparens runs after us on the global `post-self-insert-hook' and
 ;;      thinks that since a { was inserted after a self-insert event, it
 ;;      should insert the matching } - even though we took care of that.
@@ -161,7 +137,7 @@ it is restored only once."
   (laas--shut-up-smartparens))
 
 (defvar laas-basic-snippets
-  '(:cond laas-mathp
+  '(
     "!="    "\\neq"
     "!>"    "\\mapsto"
     "**"    "\\cdot"
@@ -253,14 +229,14 @@ it is restored only once."
   "Automatic subscripts! Expand In math and after a single letter.")
 
 (defvar laas-frac-snippet
-  '(:cond laas-object-on-left-condition
+  '(:cond laas-identify-adjacent-tex-object
     :expansion-desc "Wrap object on the left with \\frac{}{}, leave `point' in the denuminator."
     "/" laas-smart-fraction)
   "Frac snippet. Expand in maths when there's something to frac on on the left.")
 
 
 (defvar laas-accent-snippets
-  `(:cond laas-object-on-left-condition
+  `(:cond laas-identify-adjacent-tex-object
     ,@(cl-loop for (key exp) in '(("'. " "dot")
                                   ("'.." "ddot")
                                   ("'v " "vec")
