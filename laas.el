@@ -265,7 +265,7 @@ it is restored only once."
                                   ("'~" "tilde")
                                   ("'h" "hat")
                                   ("'-" "overline")
-                                  (":_" "underline")
+                                  ("'_" "underline")
                                   ("'s" "mathscr")
                                   ("'c" "mathcal")
                                   ("'b" "mathbf")
