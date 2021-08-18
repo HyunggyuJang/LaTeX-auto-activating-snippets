@@ -50,35 +50,38 @@
   "Return the starting position of the left-adjacent TeX object from POINT."
   (save-excursion
     (if point (goto-char point))
-    (while
-        (catch 'recursion
-          (pcase (char-before)
-            ((or ?\) ?\])
-             (backward-sexp)
-             (point))
-            (?\}
-             (cl-loop do (backward-sexp)
-                      while (= (char-before) ?}))
-             ;; try to catch the marco if the braces belong to one
-             (when (looking-back "\\\\[A-Za-z@*]+" (line-beginning-position))
-               (goto-char (match-beginning 0)))
-             (when (memq (char-before) '(?_ ?^ ?.))
-               (backward-char)
-               (throw 'recursion t)) ; yay recursion
-             (point))
-            ((pred
-              (lambda (c)
-                (or (<= ?a c ?z)
-                    (<= ?A c ?Z)
-                    (<= ?0 c ?9))))
-             (backward-word)
-             (when (= (char-before) ?\\) (backward-char))
-             (when (memq (char-before) '(?_ ?^ ?.))
-               (backward-char)
-               (throw 'recursion t)) ; yay recursion
-             (point)))
-          nil))
-    (point)))
+    (let (result)
+      (while
+          (catch 'recursion
+            (setq
+             result
+             (pcase (char-before)
+               ((or ?\) ?\])
+                (backward-sexp)
+                (point))
+               (?\}
+                (cl-loop do (backward-sexp)
+                         while (= (char-before) ?}))
+                ;; try to catch the marco if the braces belong to one
+                (when (looking-back "\\\\[A-Za-z@*]+" (line-beginning-position))
+                  (goto-char (match-beginning 0)))
+                (when (memq (char-before) '(?_ ?^ ?.))
+                  (backward-char)
+                  (throw 'recursion t)) ; yay recursion
+                (point))
+               ((pred
+                 (lambda (c)
+                   (or (<= ?a c ?z)
+                       (<= ?A c ?Z)
+                       (<= ?0 c ?9))))
+                (backward-word)
+                (when (= (char-before) ?\\) (backward-char))
+                (when (memq (char-before) '(?_ ?^ ?.))
+                  (backward-char)
+                  (throw 'recursion t)) ; yay recursion
+                (point))))
+            nil))
+      result)))
 
 (defun laas-wrap-previous-object (tex-command)
   "Wrap previous TeX object in TEX-COMMAND."
