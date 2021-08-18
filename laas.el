@@ -88,8 +88,7 @@
     (insert "}")
     (save-excursion
       (goto-char start)
-      (insert (concat "\\" tex-command "{"))))
-  (laas--shut-up-smartparens))
+      (insert (concat "\\" tex-command "{")))))
 
 ;; HACK Smartparens runs after us on the global `post-self-insert-hook' and
 ;;      thinks that since a { was inserted after a self-insert event, it
