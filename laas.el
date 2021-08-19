@@ -331,6 +331,7 @@ it is restored only once."
                                   ("'-" "overline")
                                   ("'_" "underline")
                                   ("'s" "mathscr")
+                                  ("'f" "mathfrak")
                                   ("'c" "mathcal")
                                   ("'b" "mathbf")
                                   ("'r" "mathrm")
