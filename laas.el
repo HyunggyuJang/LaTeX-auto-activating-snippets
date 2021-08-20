@@ -363,10 +363,6 @@ it is restored only once."
 (apply #'aas-set-snippets 'laas-mode laas-frac-snippet)
 (apply #'aas-set-snippets 'laas-mode laas-accent-snippets)
 
-(defcustom laas-enable-auto-space t
-  "If non-nil, hook intelligent space insertion onto snippet expansion."
-  :type 'boolean
-  :group 'laas)
 
 ;;;###autoload
 (define-minor-mode laas-mode
@@ -378,11 +374,7 @@ it is restored only once."
         (aas-activate-keymap 'laas-mode)
         (add-hook 'aas-global-condition-hook
                   #'laas--no-backslash-before-point?
-                  nil 'local)
-        (when laas-enable-auto-space
-          (add-hook 'aas-post-snippet-expand-hook
-                    #'laas-current-snippet-insert-post-space-if-wanted
-                    nil 'local)))
+                  nil 'local))
     (aas-deactivate-keymap 'laas-mode)
     (remove-hook 'aas-global-condition-hook #'laas--no-backslash-before-point?
                  'local)
