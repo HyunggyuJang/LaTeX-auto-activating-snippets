@@ -44,7 +44,7 @@
         ((let ((look-before (char-before)))
             (or (<= ?a look-before ?z)
                 (<= ?A look-before ?Z)
-                (= ?\} look-before))))))
+                (memq look-before (list ?\] ?\} ?\))))))))
 
 (defun laas-identify-adjacent-tex-object (&optional point)
   "Return the starting position of the left-adjacent TeX object from POINT."
