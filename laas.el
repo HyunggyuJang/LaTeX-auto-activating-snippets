@@ -342,6 +342,7 @@ it is restored only once."
                                   ("'f" "mathfrak")
                                   ("'c" "mathcal")
                                   ("'b" "mathbf")
+                                  ("'B" "boldsymbol")
                                   ("'r" "mathrm")
                                   ("'t" "text"))
                collect :expansion-desc
