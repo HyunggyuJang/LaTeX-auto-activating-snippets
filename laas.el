@@ -273,7 +273,7 @@ it is restored only once."
     ";>"  "\\rightarrow"   ";;>" "\\longrightarrow" ";;;>" "\\max"
     ";'"  "\\prime"
     ";."  "\\cdot"         ";;." "\\circ"
-    "; "  "\\quad"         ";; " "\\qqaud")
+    "; "  "\\quad"         ";; " "\\qquad")
   "Basic snippets. Expand only inside maths.")
 
 (defvar laas-subscript-snippets
