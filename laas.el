@@ -317,7 +317,7 @@ it is restored only once."
   "Automatic subscripts! Expand In math and after a single letter.")
 
 (defvar laas-smart-snippets
-  '(:cond laas-identify-adjacent-tex-object
+  `(:cond laas-identify-adjacent-tex-object
     ,@(cl-loop for (key desc format) in '(("/" "frac" "\\frac{%s}{$1}$0")
                                           ("'S" "stackrel" "\\stackrel{$1}{%s}$0")
                                           ("'U" "underset" "\\underset{$1}{%s}$0"))
