@@ -168,6 +168,8 @@ it is restored only once."
     "||"    "\\mid"
     "~="    "\\approx"
     "~~"    "\\sim"
+    "|>"    "\\rhd"
+    "<|"    "\\lhd"
 
     "arccos" "\\arccos"
     "arccot" "\\arccot"
