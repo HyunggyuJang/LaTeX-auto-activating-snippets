@@ -85,12 +85,13 @@
 
 (defun laas-wrap-previous-object (tex-command)
   "Wrap previous TeX object in TEX-COMMAND."
-  (interactive)
-  (let ((start aas-transient-snippet-condition-result))
-    (insert "}")
-    (save-excursion
-      (goto-char start)
-      (insert (concat "\\" tex-command "{")))))
+  (lambda ()
+    (interactive)
+    (let ((start aas-transient-snippet-condition-result))
+      (insert "}")
+      (save-excursion
+        (goto-char start)
+        (insert (concat "\\" tex-command "{"))))))
 
 ;; HACK Smartparens runs after us on the global `post-self-insert-hook' and
 ;;      thinks that since a { was inserted after a self-insert event, it
@@ -324,8 +325,7 @@ it is restored only once."
                collect :expansion-desc
                collect (format "Wrap object on the left with \\%s{}{}" desc)
                collect key
-               ;; re-bind format so its not changed in the next iteration
-               collect (let ((format_ format)) (laas-inline-snippet format_))))
+               collect (laas-inline-snippet format)))
   "Smart snippet. Expand in maths when there's something to expand on on the left.")
 
 
@@ -356,9 +356,7 @@ it is restored only once."
                collect :expansion-desc
                collect (format "Wrap in \\%s{}" exp)
                collect key
-               ;; re-bind exp so its not changed in the next iteration
-               collect (let ((expp exp)) (lambda () (interactive)
-                                           (laas-wrap-previous-object expp)))))
+               collect (laas-wrap-previous-object exp)))
   "A simpler way to apply accents. Expand If LaTeX symbol immidiately before point.")
 
 (defun laas--no-backslash-before-point? ()
