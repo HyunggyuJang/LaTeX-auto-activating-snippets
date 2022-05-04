@@ -1,8 +1,8 @@
 ;;; laas.el --- A bundle of as-you-type LaTeX snippets -*- lexical-binding: t; -*-
 ;;
-;; Copyright (C) 2020-2021 Yoav Marco, TEC
+;; Copyright (C) 2020-2022 Yoav Marco, TEC, Hyunggyu Jang
 ;;
-;; Authors: Yoav Marco <https://github.com/yoavm448> TEC <https://github.com/tecosaur>
+;; Authors: Yoav Marco <https://github.com/yoavm448> TEC <https://github.com/tecosaur> Hyunggyu Jang <https://github.com/HyunggyuJang>
 ;; Maintainer: Yoav Marco <yoavm448@gmail.com>
 ;; Created: September 22, 2020
 ;; Modified: April 17, 2021
