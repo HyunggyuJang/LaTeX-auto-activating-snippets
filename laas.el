@@ -87,11 +87,13 @@
   "Wrap previous TeX object in TEX-COMMAND."
   (lambda ()
     (interactive)
-    (let ((start aas-transient-snippet-condition-result))
-      (insert "}")
+    (let ((start aas-transient-snippet-condition-result)
+          bracketed?)
       (save-excursion
         (goto-char start)
-        (insert (concat "\\" tex-command "{"))))))
+        (setq bracketed? (char-equal (char-after) ?}))
+        (insert (concat "\\" tex-command (or bracketed? "{"))))
+      (or bracketed? (insert-char "}")))))
 
 ;; HACK Smartparens runs after us on the global `post-self-insert-hook' and
 ;;      thinks that since a { was inserted after a self-insert event, it
