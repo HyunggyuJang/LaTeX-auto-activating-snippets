@@ -142,6 +142,7 @@ it is restored only once."
   '(
     "!="    "\\neq"
     "!>"    "\\mapsto"
+    "?>"    "\\hookrightarrow"
     "**"    "\\cdot"
     "+-"    "\\pm"
     "-+"    "\\mp"
