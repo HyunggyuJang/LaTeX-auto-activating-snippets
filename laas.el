@@ -92,8 +92,8 @@
       (save-excursion
         (goto-char start)
         (setq bracketed? (char-equal (char-after) ?{))
-        (insert (concat "\\" tex-command (or bracketed? "{"))))
-      (or bracketed? (insert-char ?})))))
+        (insert (concat "\\" tex-command (and bracketed? "{"))))
+      (and bracketed? (insert-char ?})))))
 
 ;; HACK Smartparens runs after us on the global `post-self-insert-hook' and
 ;;      thinks that since a { was inserted after a self-insert event, it
