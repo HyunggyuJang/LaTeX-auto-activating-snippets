@@ -88,12 +88,12 @@
   (lambda ()
     (interactive)
     (let ((start aas-transient-snippet-condition-result)
-          bracketed?)
+          needbracket?)
       (save-excursion
         (goto-char start)
-        (setq bracketed? (char-equal (char-after) ?{))
-        (insert (concat "\\" tex-command (if (not bracketed?) "{"))))
-      (if (not bracketed?) (insert-char ?})))))
+        (setq needbracket? (char-equal (char-after) ?{))
+        (insert (concat "\\" tex-command (if bracketed? "{"))))
+      (if needbracket? (insert-char ?})))))
 
 ;; HACK Smartparens runs after us on the global `post-self-insert-hook' and
 ;;      thinks that since a { was inserted after a self-insert event, it
