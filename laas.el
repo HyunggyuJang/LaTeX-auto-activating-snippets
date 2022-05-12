@@ -325,7 +325,7 @@ it is restored only once."
 (defvar laas-smart-snippets
   `(:cond laas-identify-adjacent-tex-object
     ,@(cl-loop for (key desc format) in '(("/" "frac" "\\frac{%s}{$1}$0")
-                                          ("'S" "stackrel" "\\stackrel{$1}{%s}$0")
+                                          ("'O" "stackrel" "\\stackrel{$1}{%s}$0")
                                           ("'U" "underset" "\\underset{$1}{%s}$0"))
                collect :expansion-desc
                collect (format "Wrap object on the left with \\%s{}{}" desc)
@@ -352,6 +352,7 @@ it is restored only once."
                                   ("'v"  "check")
                                   ("'u"  "breve")
                                   ("'s" "mathscr")
+                                  ("'S" "mathsf")
                                   ("'f" "mathfrak")
                                   ("'c" "mathcal")
                                   ("'b" "mathbf")
