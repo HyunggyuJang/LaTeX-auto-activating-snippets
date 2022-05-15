@@ -68,14 +68,9 @@
                 (point))
                ((pred
                  (lambda (c)
-                   (or (<= ?a c ?z)
-                       (<= ?A c ?Z)
-                       (<= ?0 c ?9))))
-                (backward-word)
-                (when (= (char-before) ?\\) (backward-char))
-                (when (memq (char-before) '(?_ ?^ ?.))
-                  (backward-char)
-                  (throw 'recursion t)) ; yay recursion
+                   (and (/= (char-syntax c) 32)
+                        (not (memq c '(?\{ ?\( ?\[))))))
+                (beginning-of-thing 'evil-WORD)
                 (point))))
             nil))
       result)))
