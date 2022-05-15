@@ -39,7 +39,9 @@
 
 (defun laas-auto-script-condition ()
   "Condition used for auto-sub/superscript snippets."
-  (/= (char-syntax (char-before)) 32))
+  (let ((c (char-before)))
+      (and (/= (char-syntax c) 32)
+           (not (memq c '(?\{ ?\( ?\[))))))
 
 (defun laas-identify-adjacent-tex-object (&optional point)
   "Return the starting position of the left-adjacent TeX object from POINT."
