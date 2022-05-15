@@ -282,16 +282,10 @@ it is restored only once."
 
 (defvar laas-subscript-snippets
   `(:cond laas-auto-script-condition
-    ,@(mapcan
-       (lambda (indice)
-         (list
-          (concat indice indice) (concat "_" indice)
-          (concat (upcase indice) indice) (concat "^" indice)
-          (concat indice "+1") (concat "_{" indice "+1}")
-          (concat (upcase indice) "+1") (concat "^{" indice "+1}")
-          (concat indice "-1") (concat "_{" indice "-1}")
-          (concat (upcase indice) "-1") (concat "^{" indice "-1}")))
-       (list "i" "j" "k" "n" "m" "p"))
+    "jj" ,(lambda () (interactive)
+            (doom-snippets-expand :uuid "subscript"))
+    "kk" ,(lambda () (interactive)
+            (doom-snippets-expand :uuid "superscript"))
     "0"   "_0"
     "1"   "_1"
     "2"   "_2"
