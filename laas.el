@@ -41,7 +41,7 @@
   "Condition used for auto-sub/superscript snippets."
   (let ((c (char-before)))
       (and (/= (char-syntax c) 32)
-           (not (memq c '(?\{ ?\( ?\[))))))
+           (/= (char-syntax c) 40))))
 
 (defun laas-identify-adjacent-tex-object (&optional point)
   "Return the starting position of the left-adjacent TeX object from POINT."
@@ -69,8 +69,14 @@
                ((pred
                  (lambda (c)
                    (and (/= (char-syntax c) 32)
-                        (not (memq c '(?\{ ?\( ?\[))))))
-                (beginning-of-thing 'evil-WORD)
+                        (/= (char-syntax c) 40))))
+                (backward-word)
+                (when (= (char-syntax (char-before)) 119)
+                  (backward-word))
+                (when (= (char-before) ?\\) (backward-char))
+                (when (memq (char-before) '(?_ ?^ ?.))
+                  (backward-char)
+                  (throw 'recursion t)) ; yay recursion
                 (point))))
             nil))
       result)))
