@@ -201,6 +201,7 @@ it is restored only once."
     "det"    "\\det"
     "prec"   "\\prec"
     "succ"   "\\succ"
+    "deg"    "\\deg"
 
     "CC" "\\mathbb{C}"
     "FF" "\\mathbb{F}"
