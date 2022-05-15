@@ -39,12 +39,7 @@
 
 (defun laas-auto-script-condition ()
   "Condition used for auto-sub/superscript snippets."
-  (cond ((or (bobp) (= (1- (point)) (point-min)))
-         nil)
-        ((let ((look-before (char-before)))
-            (or (<= ?a look-before ?z)
-                (<= ?A look-before ?Z)
-                (memq look-before (list ?\] ?\} ?\))))))))
+  (/= (char-syntax (char-before)) 32))
 
 (defun laas-identify-adjacent-tex-object (&optional point)
   "Return the starting position of the left-adjacent TeX object from POINT."
@@ -292,10 +287,10 @@ it is restored only once."
          (list
           (concat indice indice) (concat "_" indice)
           (concat (upcase indice) indice) (concat "^" indice)
-          (concat indice "p1") (concat "_{" indice "+1}")
-          (concat (upcase indice) "p1") (concat "^{" indice "+1}")
-          (concat indice "m1") (concat "_{" indice "-1}")
-          (concat (upcase indice) "m1") (concat "^{" indice "-1}")))
+          (concat indice "+1") (concat "_{" indice "+1}")
+          (concat (upcase indice) "+1") (concat "^{" indice "+1}")
+          (concat indice "-1") (concat "_{" indice "-1}")
+          (concat (upcase indice) "-1") (concat "^{" indice "-1}")))
        (list "i" "j" "k" "n" "m" "p"))
     "0"   "_0"
     "1"   "_1"
