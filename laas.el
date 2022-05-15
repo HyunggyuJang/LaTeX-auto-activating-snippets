@@ -286,30 +286,16 @@ it is restored only once."
 
 (defvar laas-subscript-snippets
   `(:cond laas-auto-script-condition
-    "ii"  "_i"
-    "Ii"  "^i"
-    "ip1" "_{i+1}"
-    "Ip1" "^{i+1}"
-    "im1" "_{i-1}"
-    "Im1" "^{i-1}"
-    "jj"  "_j"
-    "Jj"  "^j"
-    "jp1" "_{j+1}"
-    "Jp1" "^{j+1}"
-    "jm1" "_{j-1}"
-    "Jm1" "^{j-1}"
-    "nn"  "_n"
-    "Nn"  "^n"
-    "np1" "_{n+1}"
-    "Np1" "^{n+1}"
-    "nm1" "_{n-1}"
-    "Nm1" "^{n-1}"
-    "kk"  "_k"
-    "Kk"  "^k"
-    "kp1" "_{k+1}"
-    "Kp1" "^{k+1}"
-    "km1" "_{k-1}"
-    "Km1" "^{k-1}"
+    ,@(mapcan
+       (lambda (indice)
+         (list
+          (concat indice indice) (concat "_" indice)
+          (concat (upcase indice) indice) (concat "^" indice)
+          (concat indice "p1") (concat "_{" indice "+1}")
+          (concat (upcase indice) "p1") (concat "^{" indice "+1}")
+          (concat indice "m1") (concat "_{" indice "-1}")
+          (concat (upcase indice) "m1") (concat "^{" indice "-1}")))
+       (list "i" "j" "k" "n" "m" "p"))
     "0"   "_0"
     "1"   "_1"
     "2"   "_2"
