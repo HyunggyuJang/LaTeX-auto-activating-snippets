@@ -37,13 +37,19 @@
              (not (memq (char-after) '(?\) ?\]))))
     (insert " ")))
 
+(defun laas-auto-script-condition ()
+  "Condition used for auto-sub/superscript snippets."
+  (let ((c (char-syntax (char-before))))
+      (and (/= c 32)
+           (/= c 40))))
+
 (defun laas-numeric-script-condition ()
   "Condition used for numeric-sub/superscript snippets."
-  (let ((c (char-syntax (char-before))))
+  (let ((c (char-before)))
     (and
      (/= c 95)
-     (or (= c 119)
-         (= c 41)))))
+     (or (= (char-syntax c) 119)
+         (= (char-syntax c) 41)))))
 
 (defun laas-identify-adjacent-tex-object (&optional point)
   "Return the starting position of the left-adjacent TeX object from POINT."
@@ -139,7 +145,7 @@ it is restored only once."
     (laas--shut-up-smartparens)))
 
 (defvar laas-basic-snippets
-  `(
+  '(
     "!="    "\\neq"
     "!>"    "\\mapsto"
     "?>"    "\\hookrightarrow"
@@ -265,7 +271,7 @@ it is restored only once."
     ";|"  "\\vee"
     ";~"  "\\approx"        ";;~" "\\simeq"
     ";_"  "\\downarrow"
-    ";;+" "\\oplus"
+                            ";;+" "\\oplus"
     ";-"  "\\leftrightarrow"";;-" "\\longleftrightarrow"
     ";*"  "\\times"         ";;*" "\\otimes"
     ";/"  "\\not"
@@ -282,15 +288,16 @@ it is restored only once."
     ";>"  "\\rightarrow"   ";;>" "\\longrightarrow" ";;;>" "\\max"
     ";'"  "\\prime"
     ";."  "\\cdot"         ";;." "\\circ"
-    "; "  "\\quad"         ";; " "\\qquad"
-    "jj" ,(lambda () (interactive)
-            (doom-snippets-expand :uuid "subscript"))
-    "kk" ,(lambda () (interactive)
-            (doom-snippets-expand :uuid "superscript")))
+    "; "  "\\quad"         ";; " "\\qquad")
   "Basic snippets. Expand only inside maths.")
 
 (defvar laas-subscript-snippets
-  `(:cond laas-numeric-script-condition
+  `(:cond laas-auto-script-condition
+    "jj" ,(lambda () (interactive)
+            (doom-snippets-expand :uuid "subscript"))
+    "kk" ,(lambda () (interactive)
+            (doom-snippets-expand :uuid "superscript"))
+    :cond laas-numeric-script-condition
     "0"   "_0"
     "1"   "_1"
     "2"   "_2"
