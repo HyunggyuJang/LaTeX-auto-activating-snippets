@@ -45,9 +45,11 @@
 
 (defun laas-numeric-script-condition ()
   "Condition used for numeric-sub/superscript snippets."
-  (let ((c (char-before)))
-    (or (= (char-syntax c) 119)
-        (= (char-syntax c) 41))))
+  (let ((c (char-syntax (char-before))))
+    (and
+     (/= c 95)
+     (or (= c 119)
+         (= c 41)))))
 
 (defun laas-identify-adjacent-tex-object (&optional point)
   "Return the starting position of the left-adjacent TeX object from POINT."
