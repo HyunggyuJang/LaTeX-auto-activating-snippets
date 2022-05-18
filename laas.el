@@ -314,7 +314,8 @@ it is restored only once."
   `(:cond laas-identify-adjacent-tex-object
     ,@(cl-loop for (key desc format) in '(("/" "frac" "\\frac{%s}{$1}$0")
                                           ("'O" "stackrel" "\\stackrel{$1}{%s}$0")
-                                          ("'U" "underset" "\\underset{$1}{%s}$0"))
+                                          ("'U" "underset" "\\underset{$1}{%s}$0")
+                                          ("'C" "colored" "\\textcolor{$1}{%s}$0"))
                collect :expansion-desc
                collect (format "Wrap object on the left with \\%s{}{}" desc)
                collect key
