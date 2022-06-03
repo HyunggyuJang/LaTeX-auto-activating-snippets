@@ -48,6 +48,8 @@
   (let ((c (char-before)))
     (and
      (/= c 95)
+     (or (< c ?0)
+         (> c ?9))
      (or (= (char-syntax c) 119)
          (= (char-syntax c) 41)))))
 
