@@ -112,15 +112,15 @@
 
 Remove ourselves, `laas--restore-smartparens-hook', as well, so
 it is restored only once."
-  (remove-hook 'post-self-insert-hook #'laas--restore-smartparens-hook)
-  (add-hook 'post-self-insert-hook #'sp--post-self-insert-hook-handler))
+  (remove-hook 'post-self-insert-hook #'laas--restore-smartparens-hook 'local)
+  (add-hook 'post-self-insert-hook #'sp--post-self-insert-hook-handler 'local))
 
 (declare-function sp--post-self-insert-hook-handler "smartparens")
 (defun laas--shut-up-smartparens ()
   "Remove Smartparens' hook temporarily from `post-self-insert-hook'."
   (when (memq #'sp--post-self-insert-hook-handler
               post-self-insert-hook)
-    (remove-hook 'post-self-insert-hook #'sp--post-self-insert-hook-handler)
+    (remove-hook 'post-self-insert-hook #'sp--post-self-insert-hook-handler 'local)
     ;; push rather than add-hook so it doesn't run right after this very own
     ;; hook, but next time
     (unless (memq #'laas--restore-smartparens-hook
