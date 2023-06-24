@@ -119,13 +119,13 @@ it is restored only once."
 (defun laas--shut-up-smartparens ()
   "Remove Smartparens' hook temporarily from `post-self-insert-hook'."
   (when (memq #'sp--post-self-insert-hook-handler
-              (default-value 'post-self-insert-hook))
+              post-self-insert-hook)
     (remove-hook 'post-self-insert-hook #'sp--post-self-insert-hook-handler)
     ;; push rather than add-hook so it doesn't run right after this very own
     ;; hook, but next time
     (unless (memq #'laas--restore-smartparens-hook
-                  (default-value 'post-self-insert-hook))
-      (push #'laas--restore-smartparens-hook (default-value 'post-self-insert-hook)))))
+                  post-self-insert-hook)
+      (push #'laas--restore-smartparens-hook post-self-insert-hook))))
 
 (defun laas-inline-snippet (format-string)
   (lambda ()
